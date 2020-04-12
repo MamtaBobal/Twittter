@@ -2,55 +2,26 @@
   <nav class="panel">
     <p class="panel-heading">Who to Follow</p>
   </nav>
-  <div class="panel-block">
-    <article class="media">
-      <div class="media-left">
-        <figure class="image id-32x32">
-          <img src="https://bulma.io/images/placeholders/64x64.png">
-        </figure>
-      </div>
-      <div class="media-content">
-        <div class="content">
-          <p>
-            <strong>John Smith</strong>
-            <small>@johnsmith</small>
-          </p>
+  <% @can_be_followed.each do |user| %>
+    <div class="panel-block" id="panel_<%= user.id %>">
+      <article class="media">
+        <div class="media-left">
+          <figure class="image id-32x32">
+            <%= gravatar_image_tag(user.email, size: 64, alt: user.name) %>
+          </figure>
         </div>
-      </div>
-    </article>
-  </div>
-  <div class="panel-block">
-    <article class="media">
-      <div class="media-left">
-        <figure class="image id-32x32">
-          <img src="https://bulma.io/images/placeholders/64x64.png">
-        </figure>
-      </div>
-      <div class="media-content">
-        <div class="content">
-          <p>
-            <strong>John Smith</strong>
-            <small>@johnsmith</small>
-          </p>
+        <div class="media-content">
+          <div class="content" id="<%= user.id %>">
+            <p>
+              <strong><%= user.name %></strong><br />
+              <small><%= user.username %></small>
+            </p>
+            <p>
+              <%= button_tag 'Follow', class: 'follow' %>
+            </p>
+          </div>
         </div>
-      </div>
-    </article>
-  </div>
-  <div class="panel-block">
-    <article class="media">
-      <div class="media-left">
-        <figure class="image id-32x32">
-          <img src="https://bulma.io/images/placeholders/64x64.png">
-        </figure>
-      </div>
-      <div class="media-content">
-        <div class="content">
-          <p>
-            <strong>John Smith</strong>
-            <small>@johnsmith</small>
-          </p>
-        </div>
-      </div>
-    </article>
-  </div>
+      </article>
+    </div>
+  <% end %>
 </div>

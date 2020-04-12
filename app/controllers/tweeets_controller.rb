@@ -1,12 +1,18 @@
 class TweeetsController < ApplicationController
   before_action :set_tweeet, only: [:show, :edit, :update, :destroy]
-  before_action :authenticate_user!, except: [:index, :show]
+  before_action :authenticate_user!, except: [:show]
 
   # GET /tweeets
   # GET /tweeets.json
   def index
-    @tweeets = Tweeet.all.order("created_at DESC")
+    following = User.includes(:tweeets).where(:id => current_user.id).first.following_users
+    tweeets = [current_user.tweeets]
+    following.each do |u|
+      tweeets << u.tweeets
+    end
+    @tweeets = tweeets.flatten
     @tweeet = Tweeet.new
+    @can_be_followed = User.all - ( User.where(:id => current_user.following.pluck(:user_id)) + Array(current_user))
   end
 
   # GET /tweeets/1

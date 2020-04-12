@@ -12,7 +12,7 @@
     </article>
   <% end %>
 
-
+<% if !@tweeets.blank? %>
   <% @tweeets.each do | tweeet | %>
     <div class="box">
       <article class="media">
@@ -46,4 +46,5 @@
       </article>
     </div>
   <% end %>
+<% end %>
 </div>
