@@ -6,8 +6,12 @@
     <div class="panel-block" id="panel_<%= user.id %>">
       <article class="media">
         <div class="media-left">
-          <figure class="image id-32x32">
-            <%= gravatar_image_tag(user.email, size: 64, alt: user.name) %>
+          <figure class="image">
+            <% if user.profile_pic.present? %>
+              <%= image_tag user.profile_pic.url %>
+            <% else %>
+              <%= image_tag 'profile.png'  %>
+            <% end %>
           </figure>
         </div>
         <div class="media-content">

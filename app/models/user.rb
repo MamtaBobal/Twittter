@@ -9,6 +9,9 @@ class User < ApplicationRecord
   has_many :followers, class_name: "Relationship", foreign_key: 'user_id'
   has_many :following, class_name: "Relationship", foreign_key: 'follower_id'
 
+  #Uploader
+  mount_uploader :profile_pic, AvatarUploader
+
   def following_users
     User.where(:id => self.following.pluck(:user_id))
   end

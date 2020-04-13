@@ -3,7 +3,11 @@
     <article class="media box">
       <figure class="media-left">
         <p class="image is-64x64">
-          <%= gravatar_image_tag(current_user.email, size: 64, alt: current_user.name) %>
+          <% if current_user.profile_pic.present? %>
+            <%= image_tag current_user.profile_pic.url  %>
+          <% else %>
+            <%= image_tag 'profile.png'  %>
+          <% end %>
         </p>
       </figure>
       <div class="media-content">
@@ -18,7 +22,11 @@
       <article class="media">
         <div class="media-left">
           <figure class="image is-64x64">
-            <%= gravatar_image_tag(tweeet.user.email, size: 64, alt: tweeet.user.name) %>
+            <% if tweeet.user.profile_pic.present? %>
+              <%= image_tag tweeet.user.profile_pic.url  %>
+            <% else %>
+              <%= image_tag 'profile.png'  %>
+            <% end %>
           </figure>
         </div>
         <div class="media-content">
