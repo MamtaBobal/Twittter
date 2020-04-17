@@ -38,15 +38,28 @@
           <% if user_signed_in? %>
             <nav class="level">
               <div class="level-left is-mobile">
-                <%= link_to tweeet, class: "level-item" do %>
-                  <span class="icon"><i class="fa fa-link" aria-hidden="true"></i></span>
-                <% end %>
-                <%= link_to edit_tweeet_path(tweeet), class: "level-item" do %>
-                  <span class="icon"><i class="fa fa-pencil" aria-hidden="true"></i></span>
-                <% end %>
-                <%= link_to tweeet, method: :delete, data: { confirm: "Are you sure?" } do %>
-                <span class="icon"><i class="fa fa-trash-o" aria-hidden="true"></i></span>
-                <% end %>
+                <div class="panel-block">
+                  <div class="level is-mobile">
+                    <% if policy(tweeet).update? %>
+                      <div class="level-item has-centered-text">
+                        <div>
+                          <%= link_to edit_tweeet_path(tweeet), class: "level-item" do %>
+                            <span class="icon"><i class="fa fa-pencil" aria-hidden="true"></i></span>
+                          <% end %>
+                        </div>
+                      </div>
+                    <% end %>
+                    <% if policy(tweeet).update? %>
+                      <div class="level-item has-centered-text">
+                        <div>
+                          <%= link_to tweeet, method: :delete, data: { confirm: "Are you sure?" } do %>
+                          <span class="icon" style="margin:2px;"><i class="fa fa-trash-o" aria-hidden="true"></i></span>
+                          <% end %>
+                        </div>
+                      </div>
+                    <% end %>
+                  </div>
+                </div>
               </div>
             </nav>
           <% end %>
