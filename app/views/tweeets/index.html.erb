@@ -16,16 +16,64 @@
 <script type="text/javascript">
   $(".follow").click(function(){
     var user_id = $(this).closest("div").attr('id');
-     $(this).html('Following').css({color: "blue"});
+    $(this).html('Following').css({color: "blue"});
     $.ajax({
       url: "/relationships",
       type: "POST",
       beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
-      data: {user_id : user_id},
-      success: function(data){
-        var string = "#panel_" + data["user_id"]
-        $(string).remove();
-      }
+      data: {user_id : user_id}
     });
+  });
+  $(".unfollow").click(function(){
+    var user_id = $(this).closest("div").attr('id');
+    $(this).html('Follow').css({color: "black"});
+    $.ajax({
+      url: "/relationships/"+user_id,
+      type: "delete",
+      beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+      data: {user_id : user_id}
+    });
+  });
+  $(".retweet").click(function(){
+    var tweeet_id = $(this).attr('id');
+    $(this).css({"background-color": "green"});
+    $.ajax({
+      url: "/tweeets/"+tweeet_id+"/retweeet",
+      type: "POST",
+      beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))}
+    });  
+  });
+  $(".like").click(function(){
+    var tweeet_id = $(this).attr('id');
+    $(this).empty();
+    $(this).removeClass('like').addClass('dislike');
+    $(this).append("<img src='/assets/liked.png' height='18' width='20'>");
+    $.ajax({
+      url: "/tweeets/"+tweeet_id+"/like",
+      type: "POST",
+      beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))}
+    });
+    $(".dislike").click(function(){
+      var tweeet_id = $(this).attr('id');
+      $(this).empty();
+      $(this).removeClass('dislike').addClass('like');
+      $(this).append("<img src='/assets/new_disliked.png' height='18' width='20'>");
+      $.ajax({
+        url: "/tweeets/"+tweeet_id+"/dislike",
+        type: "delete",
+        beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))}
+      });  
+    });
+  });
+  $(".dislike").click(function(){
+    var tweeet_id = $(this).attr('id');
+    $(this).empty();
+    $(this).removeClass('dislike').addClass('like');
+    $(this).append("<img src='/assets/new_disliked.png' height='18' width='20'>");
+    $.ajax({
+      url: "/tweeets/"+tweeet_id+"/dislike",
+      type: "delete",
+      beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))}
+    });  
   });
 </script>

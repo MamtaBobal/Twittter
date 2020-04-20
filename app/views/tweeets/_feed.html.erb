@@ -31,15 +31,50 @@
         </div>
         <div class="media-content">
           <div class="content">
+            <% if tweeet.is_retweeeted? %>
+            You retweeeted
+            <% end %><br />
             <strong><%= tweeet.user.name %></strong><br />
             <small><%= tweeet.user.username %></small><br />
-            <p><%= tweeet.tweet %></p>
+            <p><%= tweeet.return_parent_or_self.tweet %></p>
           </div>
           <% if user_signed_in? %>
             <nav class="level">
               <div class="level-left is-mobile">
                 <div class="panel-block">
                   <div class="level is-mobile">
+                    <div class="level-item has-centered-text">
+                      <div>
+                        <% if (current_user.new_retweeeted?(tweeet) || 
+                          current_user.has_retweeeted_it_or_from_descendants?(tweeet)) %>
+                          <button class="retweet" id="<%= tweeet.id %>" style="background-color: green;margin:1px;">
+                            <span class="icon level-item"><%= image_tag("retweet.png", :alt => "Retweet", height: 18, width: 20) %></span>
+                          </button>
+                           <%= tweeet.tweeet_retweeets.count if tweeet.tweeet_retweeets.count > 0 %>
+                        <% else %>
+                          <button class="retweet" id="<%= tweeet.id %>">
+                            <span class="icon level-item"><%= image_tag("retweet.png", :alt => "Retweet", height: 18, width: 20) %></span>
+                          </button>
+                          <%= tweeet.tweeet_retweeets.count if tweeet.tweeet_retweeets.count > 0 %>
+                        <% end %>
+                      </div>
+                    </div>
+                    <div class="level-item has-centered-text">
+                      <div>
+                        <% if current_user.has_liked? tweeet %>
+                          <button class="dislike" id="<%= tweeet.id %>">
+                            <span class="icon"><%= image_tag("liked.png", :alt => "Like", height: 18, width: 20) %>
+                            </span>
+                          </button>
+                          <%= tweeet.tweeet_likes.count if tweeet.tweeet_likes.count > 0 %>
+                        <% else %>
+                          <button class="like" id="<%= tweeet.id %>">
+                            <span class="icon level-item"><%= image_tag("new_disliked.png", :alt => "Like", height: 18, width: 20, :class => "dislike_png") %></span>
+                          </button>
+                          <%= tweeet.tweeet_likes.count if tweeet.tweeet_likes.count > 0 %>
+                        <% end %>
+                      </div>
+                    </div>
                     <% if policy(tweeet).update? %>
                       <div class="level-item has-centered-text">
                         <div>

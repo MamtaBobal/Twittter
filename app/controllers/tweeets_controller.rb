@@ -2,17 +2,18 @@ class TweeetsController < ApplicationController
   before_action :set_tweeet, only: [:show, :edit, :update, :destroy]
   before_action :authenticate_user!, except: [:show]
 
+
   # GET /tweeets
   # GET /tweeets.json
   def index
+    page = params[:page] || 1
+    per_page = params[:per_page] || 3
     following = User.includes(:tweeets).where(:id => current_user.id).first.following_users
-    tweeets = [current_user.tweeets]
-    following.each do |u|
-      tweeets << u.tweeets
-    end
-    @tweeets = tweeets.flatten
+    user_ids = following.pluck(:id) + [current_user.id]
+    @tweeets = Tweeet.where(:user_id => user_ids).order(created_at: :desc).paginate(:page => params[:page], :per_page => 15) 
     @tweeet = Tweeet.new
-    @can_be_followed = User.all - ( User.where(:id => current_user.following.pluck(:user_id)) + Array(current_user))
+    @current_user = current_user
+    @can_be_followed = User.all - (Array(current_user))
   end
 
   # GET /tweeets/1
@@ -71,8 +72,30 @@ class TweeetsController < ApplicationController
     end
   end
 
+  def like
+    @tweeet = Tweeet.find(params[:id])
+    if @tweeet.parent.blank?
+      Like.create(:user_id => current_user.id, :tweeet_id => params[:id])
+    else
+      Like.create(:user_id => current_user.id, :tweeet_id => @tweeet.parent_id)
+    end
+  end
+
+  def dislike
+    @tweeet = Tweeet.find(params[:id])
+    tweeet_id = @tweeet.return_parent_or_self.id
+    Like.where(:user_id => current_user.id, :tweeet_id => tweeet_id).first.destroy()
+  end
+
+  def retweeet
+    @tweeet = Tweeet.find(params[:id]).return_parent_or_self
+    new_tweeet = current_user.tweeets.build(parent_id: @tweeet.id, tweet: nil)
+    new_tweeet.save!
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
+
     def set_tweeet
       @tweeet = Tweeet.find(params[:id])
     end

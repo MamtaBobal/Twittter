@@ -20,9 +20,11 @@
               <strong><%= user.name %></strong><br />
               <small><%= user.username %></small>
             </p>
-            <p>
-              <%= button_tag 'Follow', class: 'follow' %>
-            </p>
+            <% unless @current_user.following.map(&:user_id).include?(user.id) %>
+              <p><%= button_tag 'Follow', class: 'follow' %></p>
+            <% else %>
+              <p><%= button_tag 'Following', class: 'unfollow', style: 'color:blue;' %></p>
+            <% end %>
           </div>
         </div>
       </article>
