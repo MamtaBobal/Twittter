@@ -10,10 +10,11 @@ class TweeetsController < ApplicationController
     per_page = params[:per_page] || 3
     following = User.includes(:tweeets).where(:id => current_user.id).first.following_users
     user_ids = following.pluck(:id) + [current_user.id]
-    @tweeets = Tweeet.where(:user_id => user_ids).order(created_at: :desc).paginate(:page => params[:page], :per_page => 15) 
+    @tweeets = Tweeet.where(:user_id => user_ids).order(created_at: :desc)
     @tweeet = Tweeet.new
     @current_user = current_user
     @can_be_followed = User.all - (Array(current_user))
+    @trends = get_trends
   end
 
   # GET /tweeets/1
@@ -93,6 +94,17 @@ class TweeetsController < ApplicationController
     new_tweeet.save!
   end
 
+  def trending_feed
+    following = User.includes(:tweeets).where(:id => current_user.id).first.following_users
+    user_ids = following.pluck(:id) + [current_user.id]
+    @tweeet = Tweeet.new
+    @current_user = current_user
+    @can_be_followed = User.all - (Array(current_user))
+    @trends = get_trends
+    @tweeets = Tweeet.where("tweet ilike ?", "%#{params["hash_tag"]}%")
+    render 'index'
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
 
@@ -103,5 +115,10 @@ class TweeetsController < ApplicationController
     # Only allow a list of trusted parameters through.
     def tweeet_params
       params.require(:tweeet).permit(:tweet)
+    end
+
+    def get_trends
+      Tweeet.where("tweet ilike ?", "%#%").group_by {|x| x.tweet.split.select{|x| x.include?('#')}}
+      .map { |k, v| [k, v.size] }.sort {|k,v| v.count}.to_h
     end
 end
