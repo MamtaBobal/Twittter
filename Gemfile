@@ -34,7 +34,7 @@ gem 'gravatar_image_tag', '~> 1.2'
 
 gem 'devise', '~> 4.7', '>= 4.7.1'
 
-gem 'carrierwave', '~> 2.0'
+gem 'carrierwave', '~> 2.1'
 
 gem "pundit"
 
